@@ -1,0 +1,28 @@
+<template>
+  <view class="login-page">
+    <LoginForm></LoginForm>
+  </view>
+</template>
+<style lang="less">
+  .login-page {
+    padding: 15%;
+  }
+</style>
+<script>
+import wepy from 'wepy'
+import LoginForm from '../components/login-form'
+
+export default class LoginPage extends wepy.page {
+  config = {
+    navigationBarBackgroundColor: '#FFFFFF',
+    navigationBarTitleText: ''
+  }
+  components = {
+      LoginForm
+  }
+
+  onLoad () {
+    console.log('onload')
+  }
+}
+</script>

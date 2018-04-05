@@ -1,0 +1,143 @@
+<template>
+  <view class="login-content">
+    <view class="center"><image class="logo" src="../assets/images/login/logo.png"/></view>
+    <view class="login-form" :class="{'move-disappear': !loginType}">
+      <view class="input-wrapper">
+        <image src="../assets/images/login/email.png"/>
+        <input placeholder-class="login-input" placeholder="请输入用户名"/>
+      </view>
+      <view class="input-wrapper">
+        <image src="../assets/images/login/pwd.png"/>
+        <input placeholder-class="login-input" type="password" placeholder="请输入密码"/>
+      </view>
+    </view>
+    <view class="submit-wrapper" :class="{'move-down': loginType}">
+      <button class="login-submit" @tap="doLogin">{{loginType ? '登录': '微信登录'}}</button>
+      <text class="other-login" @tap="changeLoginWay">{{loginType ? '使用微信登录': '使用密码登录'}}</text>
+    </view>
+  </view>
+</template>
+
+<style lang="less">
+.login-input {
+  color: #d3eeee;
+  // font-size: 32rpx;
+}
+.login-content {
+  width: 100%;
+  .logo {
+    width: 260rpx;
+    height: 260rpx;
+    margin-bottom: 96rpx;
+  }
+  .login-form {
+    transition: all 1s ease-in-out;
+    .input-wrapper {
+      height: 93rpx;
+      position: relative;
+      border-bottom: 1rpx #d7d6db dashed;
+      image {
+        width: 64rpx;
+        height: 64rpx;
+        float: left;
+        margin-left: 16rpx;
+        margin-top: 29rpx;
+      }
+      input {
+        float: left;
+        margin-top: 36rpx;
+        color: #71c9ca;
+        font-size: 32rpx;
+        margin-left: 20rpx;
+      }
+    }
+  }
+  .submit-wrapper {
+      transition: all 1s ease-in-out;
+      text-align: center;
+      transform: translateY(-200rpx);
+      .login-submit {
+        background-color: #e4f4f4;
+        color: #74c8ca;
+        font-size: 36rpx;
+        border: 1rpx #74c8ca solid;
+        margin-top: 56rpx;
+        height: 90rpx;
+        line-height: 90rpx;
+      }
+      .button-hover {
+        opacity: 0.7;
+      }
+      .other-login {
+        color: #d7d6db;
+        font-size: 30rpx;
+      }
+  }
+}
+
+.move-down {
+  transform: translateY(0) !important;
+}
+.move-disappear {
+  transform: rotate(360deg) scale(0, 0);
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+import loginService  from '../service/wechat-login-service'
+
+export default class LoginForm extends wepy.component {
+  data = {
+    loginType: 0, // 登录类型, 0 为微信, 1 为普通登录
+    loginForm: {
+      username: '',
+      pwd: ''
+    },
+    userinfo: {
+
+    },
+    loadAnimation: {}
+  }
+
+  methods = {
+    changeLoginWay () {
+      this.loginType = !this.loginType
+      if (this.checkIfWechatLogin()) {
+        this.loadAnimation = 'move-disappear'
+      }
+      else {
+        this.loadAnimation = 'move-appear'
+      }
+    },
+    async doLogin () {
+      if (this.checkIfWechatLogin()) {
+        try{
+          this.userinfo = await loginService.getUserInfo()
+          console.log(this.userinfo)
+          wx.showToast({
+            title: JSON.stringify(this.userinfo),
+            icon: "success",
+            mask: true,
+            // duration: 30000
+          });
+        }
+        catch (err) {
+          console.log(err)
+        }
+      }
+      // console.log('a', loginService.getUserInfo())
+      
+    }
+  }
+
+  checkIfWechatLogin () {
+    if (!this.loginType) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
+}
+</script>

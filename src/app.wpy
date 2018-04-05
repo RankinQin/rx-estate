@@ -7,6 +7,9 @@
   justify-content: space-between;
   box-sizing: border-box;
 }
+.center {
+  text-align: center;
+}
 </style>
 
 <script>
@@ -22,6 +25,7 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/login',
       'pages/index'
     ],
     window: {
